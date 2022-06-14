@@ -137,39 +137,39 @@ public final class AWSS3StorageUploadInputStreamOperation
 
     @Override
     public void cancel() {
-        if (transferObserver != null) {
+        submitObserverOperation(() -> {
             try {
                 storageService.cancelTransfer(transferObserver);
             } catch (Exception exception) {
                 onError.accept(new StorageException(
-                    "Something went wrong while attempting to cancel your AWS S3 Storage " +
-                        "upload input stream operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
+                        "Something went wrong while attempting to cancel your AWS S3 Storage " +
+                                "upload input stream operation",
+                        exception,
+                        "See attached exception for more information and suggestions"
                 ));
             }
-        }
+        });
     }
 
     @Override
     public void pause() {
-        if (transferObserver != null) {
+        submitObserverOperation(() -> {
             try {
                 storageService.pauseTransfer(transferObserver);
             } catch (Exception exception) {
                 onError.accept(new StorageException(
-                    "Something went wrong while attempting to pause your AWS S3 Storage " +
-                        "upload input stream operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
+                        "Something went wrong while attempting to pause your AWS S3 Storage " +
+                                "upload input stream operation",
+                        exception,
+                        "See attached exception for more information and suggestions"
                 ));
             }
-        }
+        });
     }
 
     @Override
     public void resume() {
-        if (transferObserver != null) {
+        submitObserverOperation(() -> {
             try {
                 storageService.resumeTransfer(transferObserver);
             } catch (Exception exception) {
@@ -180,6 +180,12 @@ public final class AWSS3StorageUploadInputStreamOperation
                     "See attached exception for more information and suggestions"
                 ));
             }
+        });
+    }
+
+    private void submitObserverOperation(@NonNull Runnable runnable) {
+        if (transferObserver != null) {
+            executorService.submit(runnable);
         }
     }
 
@@ -210,7 +216,7 @@ public final class AWSS3StorageUploadInputStreamOperation
         }
 
         @Override
-        public void onError(int transferId, Exception exception) {
+        public void onError(int transferId, @NonNull Exception exception) {
             Amplify.Hub.publish(HubChannel.STORAGE,
                 HubEvent.create(StorageChannelEventName.UPLOAD_ERROR, exception));
             onError.accept(new StorageException(
