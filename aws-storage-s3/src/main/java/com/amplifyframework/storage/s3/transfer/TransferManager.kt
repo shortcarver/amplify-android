@@ -180,12 +180,12 @@ internal class TransferManager @JvmOverloads constructor(
     }
 
     fun pause(transferRecordId: Int): Boolean {
-        val transferRecord = transferStatusUpdater.activeTransferMap[transferRecordId]
+        val transferRecord = transferDB.getTransferRecordById(transferRecordId)
         return transferRecord?.pause(transferStatusUpdater, workManager) ?: false
     }
 
     fun resume(transferRecordId: Int): Boolean {
-        val transferRecord = transferStatusUpdater.activeTransferMap[transferRecordId]
+        val transferRecord = transferDB.getTransferRecordById(transferRecordId)
         return transferRecord?.resume(
             pluginKey,
             transferStatusUpdater,
@@ -196,7 +196,7 @@ internal class TransferManager @JvmOverloads constructor(
     }
 
     fun cancel(transferRecordId: Int): Boolean {
-        val transferRecord = transferStatusUpdater.activeTransferMap[transferRecordId]
+        val transferRecord = transferDB.getTransferRecordById(transferRecordId)
         return transferRecord?.cancel(
             pluginKey,
             transferStatusUpdater,

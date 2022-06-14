@@ -84,7 +84,7 @@ internal class TransferWorkerObserver private constructor(
                 val transferRecordId =
                     transferStatusUpdater.getTransferRecordIdForWorkInfo(workInfo.id.toString())
                 transferRecordId.takeIf { it != -1 }?.let {
-                    val transferRecord = transferStatusUpdater.activeTransferMap[transferRecordId]
+                    val transferRecord = transferDB.getTransferRecordById(it)
                     transferRecord?.let {
                         // logger.debug("onChanged for ${workInfo.id} to ${workInfo.state}")
                         if (workInfo.tags.contains(BaseTransferWorker.MULTIPART_UPLOAD)) {
