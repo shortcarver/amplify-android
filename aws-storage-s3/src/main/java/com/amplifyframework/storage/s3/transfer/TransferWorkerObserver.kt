@@ -123,7 +123,7 @@ internal class TransferWorkerObserver private constructor(
             }
         } else if (workInfo.tags.contains(completionTag)) {
             if (abortRequest(transferRecord, workInfo.state)) {
-                transferRecord.abortMultipartUploadRequest(pluginKey, workManager)
+                TransferRecordOperation.abortMultipartUploadRequest(transferRecord, pluginKey, workManager)
             }
             updateTransferState(transferRecord, workInfo.state)
             if (workInfo.state.isFinished) {

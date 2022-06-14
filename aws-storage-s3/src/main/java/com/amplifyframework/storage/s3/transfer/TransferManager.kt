@@ -111,11 +111,11 @@ internal class TransferManager @JvmOverloads constructor(
         }
         val transferRecord = transferDB.getTransferRecordById(transferRecordId)
             ?: throw IllegalStateException("Failed to find transferRecord")
-        val transferObserver = transferRecord.start(
+        val transferObserver = TransferRecordOperation.start(
+            transferRecord,
             pluginKey,
             transferStatusUpdater,
             workManager,
-            transferWorkerObserver,
             transferDB,
             listener
         )
@@ -163,11 +163,11 @@ internal class TransferManager @JvmOverloads constructor(
         }
         val transferRecord = transferDB.getTransferRecordById(transferRecordId)
             ?: throw IllegalStateException("Failed to find transferRecord")
-        val transferObserver = transferRecord.start(
+        val transferObserver = TransferRecordOperation.start(
+            transferRecord,
             pluginKey,
             transferStatusUpdater,
             workManager,
-            transferWorkerObserver,
             transferDB,
             listener
         )
@@ -181,27 +181,32 @@ internal class TransferManager @JvmOverloads constructor(
 
     fun pause(transferRecordId: Int): Boolean {
         val transferRecord = transferDB.getTransferRecordById(transferRecordId)
-        return transferRecord?.pause(transferStatusUpdater, workManager) ?: false
+        return transferRecord?.let { TransferRecordOperation.pause(it, transferStatusUpdater, workManager) } ?: false
     }
 
     fun resume(transferRecordId: Int): Boolean {
         val transferRecord = transferDB.getTransferRecordById(transferRecordId)
-        return transferRecord?.resume(
-            pluginKey,
-            transferStatusUpdater,
-            workManager,
-            transferWorkerObserver,
-            transferDB
-        ) ?: false
+        return transferRecord?.let {
+            TransferRecordOperation.resume(
+                it,
+                pluginKey,
+                transferStatusUpdater,
+                workManager,
+                transferDB
+            )
+        } ?: false
     }
 
     fun cancel(transferRecordId: Int): Boolean {
         val transferRecord = transferDB.getTransferRecordById(transferRecordId)
-        return transferRecord?.cancel(
-            pluginKey,
-            transferStatusUpdater,
-            workManager
-        ) ?: false
+        return transferRecord?.let {
+            TransferRecordOperation.cancel(
+                it,
+                pluginKey,
+                transferStatusUpdater,
+                workManager
+            )
+        } ?: false
     }
 
     private fun createMultipartUploadRecords(
