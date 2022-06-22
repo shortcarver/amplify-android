@@ -24,6 +24,7 @@ import com.amplifyframework.storage.operation.StorageDownloadFileOperation;
 import com.amplifyframework.storage.operation.StorageGetUrlOperation;
 import com.amplifyframework.storage.operation.StorageListOperation;
 import com.amplifyframework.storage.operation.StorageRemoveOperation;
+import com.amplifyframework.storage.operation.StorageTransferOperation;
 import com.amplifyframework.storage.operation.StorageUploadFileOperation;
 import com.amplifyframework.storage.operation.StorageUploadInputStreamOperation;
 import com.amplifyframework.storage.options.StorageDownloadFileOptions;
@@ -37,11 +38,13 @@ import com.amplifyframework.storage.result.StorageGetUrlResult;
 import com.amplifyframework.storage.result.StorageListResult;
 import com.amplifyframework.storage.result.StorageRemoveResult;
 import com.amplifyframework.storage.result.StorageTransferProgress;
+import com.amplifyframework.storage.result.StorageTransferResult;
 import com.amplifyframework.storage.result.StorageUploadFileResult;
 import com.amplifyframework.storage.result.StorageUploadInputStreamResult;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * Defines the Client API consumed by the application.
@@ -181,6 +184,23 @@ public final class StorageCategory extends Category<StoragePlugin<?>> implements
             @NonNull Consumer<StorageException> onError
     ) {
         return getSelectedPlugin().uploadInputStream(key, local, options, onProgress, onSuccess, onError);
+    }
+
+    @Override
+    public void getTransfer(
+            @NonNull UUID transferId,
+            @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived
+    ) {
+        getSelectedPlugin().getTransfer(transferId, onReceived);
+    }
+
+    @Override
+    public void getTransfer(
+            @NonNull UUID transferId,
+            @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived,
+            @NonNull Consumer<StorageException> onError
+    ) {
+        getSelectedPlugin().getTransfer(transferId, onReceived, onError);
     }
 
     @NonNull

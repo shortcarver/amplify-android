@@ -22,6 +22,7 @@ import com.amplifyframework.storage.operation.StorageDownloadFileOperation;
 import com.amplifyframework.storage.operation.StorageGetUrlOperation;
 import com.amplifyframework.storage.operation.StorageListOperation;
 import com.amplifyframework.storage.operation.StorageRemoveOperation;
+import com.amplifyframework.storage.operation.StorageTransferOperation;
 import com.amplifyframework.storage.operation.StorageUploadFileOperation;
 import com.amplifyframework.storage.operation.StorageUploadInputStreamOperation;
 import com.amplifyframework.storage.options.StorageDownloadFileOptions;
@@ -35,11 +36,13 @@ import com.amplifyframework.storage.result.StorageGetUrlResult;
 import com.amplifyframework.storage.result.StorageListResult;
 import com.amplifyframework.storage.result.StorageRemoveResult;
 import com.amplifyframework.storage.result.StorageTransferProgress;
+import com.amplifyframework.storage.result.StorageTransferResult;
 import com.amplifyframework.storage.result.StorageUploadFileResult;
 import com.amplifyframework.storage.result.StorageUploadInputStreamResult;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * Defines the behavior of the Storage category that clients will use.
@@ -261,6 +264,28 @@ public interface StorageCategoryBehavior {
             @NonNull StorageUploadInputStreamOptions options,
             @NonNull Consumer<StorageTransferProgress> onProgress,
             @NonNull Consumer<StorageUploadInputStreamResult> onSuccess,
+            @NonNull Consumer<StorageException> onError);
+
+    /**
+     * Gets an existing transfer in the local device queue.
+     * Register consumer to observe result of transfer lookup.
+     * @param transferId the unique identifier of the object in storage
+     * @param onReceived Called if operation completed successfully and furnishes an operation
+     */
+    void getTransfer(
+            @NonNull UUID transferId,
+            @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived);
+
+    /**
+     * Gets an existing transfer in the local device queue.
+     * Register consumer to observe result of transfer lookup.
+     * @param transferId the unique identifier of the object in storage
+     * @param onReceived Called if operation completed successfully and furnishes an operation
+     * @param onError Called if an error occurs during lookup
+     */
+    void getTransfer(
+            @NonNull UUID transferId,
+            @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived,
             @NonNull Consumer<StorageException> onError);
 
     /**

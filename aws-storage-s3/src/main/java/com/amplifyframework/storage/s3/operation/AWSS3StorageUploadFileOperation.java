@@ -39,6 +39,7 @@ import com.amplifyframework.storage.s3.transfer.TransferState;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -48,9 +49,6 @@ public final class AWSS3StorageUploadFileOperation extends StorageUploadFileOper
     private final StorageService storageService;
     private final ExecutorService executorService;
     private final AuthCredentialsProvider authCredentialsProvider;
-    private final Consumer<StorageTransferProgress> onProgress;
-    private final Consumer<StorageUploadFileResult> onSuccess;
-    private final Consumer<StorageException> onError;
     private TransferObserver transferObserver;
     private final AWSS3StoragePluginConfiguration awsS3StoragePluginConfiguration;
 
@@ -76,13 +74,16 @@ public final class AWSS3StorageUploadFileOperation extends StorageUploadFileOper
         @NonNull Consumer<StorageUploadFileResult> onSuccess,
         @NonNull Consumer<StorageException> onError
     ) {
-        super(Objects.requireNonNull(request));
+        super(
+                Objects.requireNonNull(request),
+                UUID.randomUUID(),
+                Objects.requireNonNull(onProgress),
+                Objects.requireNonNull(onSuccess),
+                Objects.requireNonNull(onError)
+        );
         this.storageService = Objects.requireNonNull(storageService);
         this.executorService = executorService;
         this.authCredentialsProvider = authCredentialsProvider;
-        this.onProgress = Objects.requireNonNull(onProgress);
-        this.onSuccess = Objects.requireNonNull(onSuccess);
-        this.onError = Objects.requireNonNull(onError);
         this.transferObserver = null;
         this.awsS3StoragePluginConfiguration = awsS3StoragePluginConfiguration;
     }

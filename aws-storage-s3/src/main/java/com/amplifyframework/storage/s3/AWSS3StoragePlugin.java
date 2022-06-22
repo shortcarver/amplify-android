@@ -29,6 +29,7 @@ import com.amplifyframework.storage.operation.StorageDownloadFileOperation;
 import com.amplifyframework.storage.operation.StorageGetUrlOperation;
 import com.amplifyframework.storage.operation.StorageListOperation;
 import com.amplifyframework.storage.operation.StorageRemoveOperation;
+import com.amplifyframework.storage.operation.StorageTransferOperation;
 import com.amplifyframework.storage.operation.StorageUploadFileOperation;
 import com.amplifyframework.storage.operation.StorageUploadInputStreamOperation;
 import com.amplifyframework.storage.options.StorageDownloadFileOptions;
@@ -42,6 +43,7 @@ import com.amplifyframework.storage.result.StorageGetUrlResult;
 import com.amplifyframework.storage.result.StorageListResult;
 import com.amplifyframework.storage.result.StorageRemoveResult;
 import com.amplifyframework.storage.result.StorageTransferProgress;
+import com.amplifyframework.storage.result.StorageTransferResult;
 import com.amplifyframework.storage.result.StorageUploadFileResult;
 import com.amplifyframework.storage.result.StorageUploadInputStreamResult;
 import com.amplifyframework.storage.s3.configuration.AWSS3StoragePluginConfiguration;
@@ -67,6 +69,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -495,6 +498,23 @@ public final class AWSS3StoragePlugin extends StoragePlugin<S3Client> {
         operation.start();
 
         return operation;
+    }
+
+    @NonNull
+    @Override
+    public void getTransfer(
+            @NonNull UUID transferId,
+            @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived) {
+        getTransfer(transferId, onReceived, NoOpConsumer.create());
+    }
+
+    @NonNull
+    @Override
+    public void getTransfer(
+            @NonNull UUID transferId,
+            @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived,
+            @NonNull Consumer<StorageException> onError) {
+        // TODO: Return Transfer
     }
 
     @NonNull

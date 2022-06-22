@@ -36,6 +36,7 @@ import com.amplifyframework.storage.s3.transfer.TransferObserver;
 import com.amplifyframework.storage.s3.transfer.TransferState;
 
 import java.io.File;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -45,9 +46,6 @@ public final class AWSS3StorageDownloadFileOperation
     extends StorageDownloadFileOperation<AWSS3StorageDownloadFileRequest> {
     private final StorageService storageService;
     private final AuthCredentialsProvider authCredentialsProvider;
-    private final Consumer<StorageTransferProgress> onProgress;
-    private final Consumer<StorageDownloadFileResult> onSuccess;
-    private final Consumer<StorageException> onError;
     private TransferObserver transferObserver;
     private File file;
     private final AWSS3StoragePluginConfiguration awsS3StoragePluginConfiguration;
@@ -75,13 +73,10 @@ public final class AWSS3StorageDownloadFileOperation
         @NonNull Consumer<StorageDownloadFileResult> onSuccess,
         @NonNull Consumer<StorageException> onError
     ) {
-        super(request);
+        super(request, UUID.randomUUID(), onProgress, onSuccess, onError);
         this.storageService = storageService;
         this.executorService = executorService;
         this.authCredentialsProvider = authCredentialsProvider;
-        this.onProgress = onProgress;
-        this.onSuccess = onSuccess;
-        this.onError = onError;
         this.transferObserver = null;
         this.file = null;
         this.awsS3StoragePluginConfiguration = awss3StoragePluginConfiguration;
