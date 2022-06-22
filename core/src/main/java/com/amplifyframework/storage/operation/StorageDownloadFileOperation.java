@@ -33,19 +33,27 @@ import java.util.UUID;
 public abstract class StorageDownloadFileOperation<R> extends StorageTransferOperation<R, StorageDownloadFileResult> {
 
     /**
-     * Constructs a new AmplifyOperation.
+     * Constructs a new StorageDownloadFileOperation.
+     * @param amplifyOperationRequest The request object of the operation
+     */
+    public StorageDownloadFileOperation(@Nullable R amplifyOperationRequest) {
+        this(amplifyOperationRequest, UUID.randomUUID().toString(), null, null, null);
+    }
+
+    /**
+     * Constructs a new StorageDownloadFileOperation.
      * @param amplifyOperationRequest The request object of the operation
      * @param transferId Unique identifier for tracking in local device queue
      * @param onProgress Notified upon advancements in upload progress
      * @param onSuccess Will be notified when results of upload are available
      * @param onError Notified when upload fails with an error
      */
-    public StorageDownloadFileOperation(
+    protected StorageDownloadFileOperation(
             @Nullable R amplifyOperationRequest,
-            @NonNull UUID transferId,
-            @NonNull Consumer<StorageTransferProgress> onProgress,
-            @NonNull Consumer<StorageDownloadFileResult> onSuccess,
-            @NonNull Consumer<StorageException> onError
+            @NonNull String transferId,
+            @Nullable Consumer<StorageTransferProgress> onProgress,
+            @Nullable Consumer<StorageDownloadFileResult> onSuccess,
+            @Nullable Consumer<StorageException> onError
     ) {
         super(amplifyOperationRequest, transferId, onProgress, onSuccess, onError);
     }
@@ -56,7 +64,7 @@ public abstract class StorageDownloadFileOperation<R> extends StorageTransferOpe
      * @param onSuccess Consumer which provides a successful transfer result
      */
     @Override
-    public void setOnSuccess(@NonNull Consumer<StorageDownloadFileResult> onSuccess) {
+    public void setOnSuccess(@Nullable Consumer<StorageDownloadFileResult> onSuccess) {
         super.setOnSuccess(onSuccess);
     }
 }

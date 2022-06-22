@@ -34,19 +34,26 @@ public abstract class StorageUploadInputStreamOperation<R>
         extends StorageUploadOperation<R, StorageUploadInputStreamResult> {
 
     /**
-     * Constructs a new AmplifyOperation.
+     * Constructs a new StorageUploadInputStreamOperation.
+     * @param amplifyOperationRequest The request object of the operation
+     */
+    public StorageUploadInputStreamOperation(@Nullable R amplifyOperationRequest) {
+        this(amplifyOperationRequest, UUID.randomUUID().toString(), null, null, null);
+    }
+    /**
+     * Constructs a new StorageUploadInputStreamOperation.
      * @param amplifyOperationRequest The request object of the operation
      * @param transferId Unique identifier for tracking in local device queue
      * @param onProgress Notified upon advancements in upload progress
      * @param onSuccess Will be notified when results of upload are available
      * @param onError Notified when upload fails with an error
      */
-    public StorageUploadInputStreamOperation(
+    protected StorageUploadInputStreamOperation(
             @Nullable R amplifyOperationRequest,
-            @NonNull UUID transferId,
-            @NonNull Consumer<StorageTransferProgress> onProgress,
-            @NonNull Consumer<StorageUploadInputStreamResult> onSuccess,
-            @NonNull Consumer<StorageException> onError
+            @NonNull String transferId,
+            @Nullable Consumer<StorageTransferProgress> onProgress,
+            @Nullable Consumer<StorageUploadInputStreamResult> onSuccess,
+            @Nullable Consumer<StorageException> onError
     ) {
         super(amplifyOperationRequest, transferId, onProgress, onSuccess, onError);
     }
@@ -57,7 +64,7 @@ public abstract class StorageUploadInputStreamOperation<R>
      * @param onSuccess Consumer which provides a successful transfer result
      */
     @Override
-    public void setOnSuccess(@NonNull Consumer<StorageUploadInputStreamResult> onSuccess) {
+    public void setOnSuccess(@Nullable Consumer<StorageUploadInputStreamResult> onSuccess) {
         super.setOnSuccess(onSuccess);
     }
 }

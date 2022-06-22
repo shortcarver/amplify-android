@@ -73,7 +73,7 @@ public final class AWSS3StorageDownloadFileOperation
         @NonNull Consumer<StorageDownloadFileResult> onSuccess,
         @NonNull Consumer<StorageException> onError
     ) {
-        super(request, UUID.randomUUID(), onProgress, onSuccess, onError);
+        super(request, UUID.randomUUID().toString(), onProgress, onSuccess, onError);
         this.storageService = storageService;
         this.executorService = executorService;
         this.authCredentialsProvider = authCredentialsProvider;

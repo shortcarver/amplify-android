@@ -33,7 +33,15 @@ import java.util.UUID;
 public abstract class StorageUploadFileOperation<R> extends StorageUploadOperation<R, StorageUploadFileResult> {
 
     /**
-     * Constructs a new AmplifyOperation.
+     * Constructs a new StorageUploadFileOperation.
+     * @param amplifyOperationRequest The request object of the operation
+     */
+    public StorageUploadFileOperation(@Nullable R amplifyOperationRequest) {
+        this(amplifyOperationRequest, UUID.randomUUID().toString(), null, null, null);
+    }
+
+    /**
+     * Constructs a new StorageUploadFileOperation.
      * @param amplifyOperationRequest The request object of the operation
      * @param transferId Unique identifier for tracking in local device queue
      * @param onProgress Notified upon advancements in upload progress
@@ -42,10 +50,10 @@ public abstract class StorageUploadFileOperation<R> extends StorageUploadOperati
      */
     public StorageUploadFileOperation(
             @Nullable R amplifyOperationRequest,
-            @NonNull UUID transferId,
-            @NonNull Consumer<StorageTransferProgress> onProgress,
-            @NonNull Consumer<StorageUploadFileResult> onSuccess,
-            @NonNull Consumer<StorageException> onError
+            @NonNull String transferId,
+            @Nullable Consumer<StorageTransferProgress> onProgress,
+            @Nullable Consumer<StorageUploadFileResult> onSuccess,
+            @Nullable Consumer<StorageException> onError
     ) {
         super(amplifyOperationRequest, transferId, onProgress, onSuccess, onError);
     }

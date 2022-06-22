@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import com.amplifyframework.core.Consumer;
 import com.amplifyframework.storage.StorageException;
 import com.amplifyframework.storage.result.StorageTransferProgress;
-import com.amplifyframework.storage.result.StorageTransferResult;
+import com.amplifyframework.storage.result.StorageUploadResult;
 
 import java.util.UUID;
 
@@ -31,25 +31,43 @@ import java.util.UUID;
  * @param <R> type of the request object
  * @param <T> type of success transfer result
  */
-public abstract class StorageUploadOperation<R, T extends StorageTransferResult>
+public abstract class StorageUploadOperation<R, T extends StorageUploadResult>
         extends StorageTransferOperation<R, T> {
 
+
     /**
-     * Constructs a new AmplifyOperation.
+     * Constructs a new StorageUploadOperation.
+     * @param amplifyOperationRequest The request object of the operation
+     */
+    public StorageUploadOperation(@Nullable R amplifyOperationRequest) {
+        this(amplifyOperationRequest, UUID.randomUUID().toString(), null, null, null);
+    }
+
+    /**
+     * Constructs a new StorageUploadOperation.
      * @param amplifyOperationRequest The request object of the operation
      * @param transferId Unique identifier for tracking in local device queue
      * @param onProgress Notified upon advancements in upload progress
      * @param onSuccess Will be notified when results of upload are available
      * @param onError Notified when upload fails with an error
      */
-    public StorageUploadOperation(
+    protected StorageUploadOperation(
             @Nullable R amplifyOperationRequest,
-            @NonNull UUID transferId,
-            @NonNull Consumer<StorageTransferProgress> onProgress,
-            @NonNull Consumer<T> onSuccess,
-            @NonNull Consumer<StorageException> onError
+            @NonNull String transferId,
+            @Nullable Consumer<StorageTransferProgress> onProgress,
+            @Nullable Consumer<T> onSuccess,
+            @Nullable Consumer<StorageException> onError
     ) {
         super(amplifyOperationRequest, transferId, onProgress, onSuccess, onError);
+    }
+
+    /**
+     * Provide a Consumer to receive successful transfer result.
+     *
+     * @param onSuccess Consumer which provides a successful transfer result
+     */
+    public void setOnSuccess(@Nullable Consumer<T> onSuccess) {
+        this.onSuccess = onSuccess;
     }
 }
 

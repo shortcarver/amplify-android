@@ -27,8 +27,6 @@ import com.amplifyframework.storage.StorageException;
 import com.amplifyframework.storage.result.StorageTransferProgress;
 import com.amplifyframework.storage.result.StorageTransferResult;
 
-import java.util.UUID;
-
 /**
  * Base operation type for any transfer behavior on the Storage category.
  *
@@ -41,26 +39,26 @@ public abstract class StorageTransferOperation<R, T extends StorageTransferResul
     /**
      * Consumer that notifies transfer progress.
      */
-    @NonNull
+    @Nullable
     protected Consumer<StorageTransferProgress> onProgress;
 
     /**
      * Consumer that notifies transfer success.
      */
-    @NonNull
+    @Nullable
     protected Consumer<T> onSuccess;
 
     /**
      * Consumer that notifies transfer error.
      */
-    @NonNull
+    @Nullable
     protected Consumer<StorageException> onError;
 
     /**
      * Unique identifier for the transfer.
      */
     @NonNull
-    private final UUID transferId;
+    private final String transferId;
 
     /**
      * Constructs a new AmplifyOperation.
@@ -70,12 +68,12 @@ public abstract class StorageTransferOperation<R, T extends StorageTransferResul
      * @param onSuccess Will be notified when results of upload are available
      * @param onError Notified when upload fails with an error
      */
-    public StorageTransferOperation(
+    protected StorageTransferOperation(
             @Nullable R amplifyOperationRequest,
-            @NonNull UUID transferId,
-            @NonNull Consumer<StorageTransferProgress> onProgress,
-            @NonNull Consumer<T> onSuccess,
-            @NonNull Consumer<StorageException> onError
+            @NonNull String transferId,
+            @Nullable Consumer<StorageTransferProgress> onProgress,
+            @Nullable Consumer<T> onSuccess,
+            @Nullable Consumer<StorageException> onError
     ) {
         super(CategoryType.STORAGE, amplifyOperationRequest);
         this.transferId = transferId;
@@ -91,7 +89,7 @@ public abstract class StorageTransferOperation<R, T extends StorageTransferResul
      * @return device queue transfer id
      */
     @NonNull
-    public UUID getTransferId() {
+    public String getTransferId() {
         return transferId;
     }
 
@@ -100,7 +98,7 @@ public abstract class StorageTransferOperation<R, T extends StorageTransferResul
      *
      * @param onProgress Consumer which provides incremental progress updates
      */
-    public void setOnProgress(@NonNull Consumer<StorageTransferProgress> onProgress) {
+    public void setOnProgress(@Nullable Consumer<StorageTransferProgress> onProgress) {
         this.onProgress = onProgress;
     }
 
@@ -109,7 +107,7 @@ public abstract class StorageTransferOperation<R, T extends StorageTransferResul
      *
      * @param onSuccess Consumer which provides a successful transfer result
      */
-    public void setOnSuccess(@NonNull Consumer<T> onSuccess) {
+    public void setOnSuccess(@Nullable Consumer<T> onSuccess) {
         this.onSuccess = onSuccess;
     }
 
@@ -118,7 +116,7 @@ public abstract class StorageTransferOperation<R, T extends StorageTransferResul
      *
      * @param onError Consumer which provides transfer errors
      */
-    public void setOnError(@NonNull Consumer<StorageException> onError) {
+    public void setOnError(@Nullable Consumer<StorageException> onError) {
         this.onError = onError;
     }
 }

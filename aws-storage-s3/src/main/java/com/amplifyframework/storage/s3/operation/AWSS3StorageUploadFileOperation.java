@@ -76,7 +76,7 @@ public final class AWSS3StorageUploadFileOperation extends StorageUploadFileOper
     ) {
         super(
                 Objects.requireNonNull(request),
-                UUID.randomUUID(),
+                UUID.randomUUID().toString(),
                 Objects.requireNonNull(onProgress),
                 Objects.requireNonNull(onSuccess),
                 Objects.requireNonNull(onError)
