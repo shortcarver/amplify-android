@@ -42,7 +42,6 @@ import com.amplifyframework.storage.result.StorageUploadInputStreamResult;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.UUID;
 
 /**
  * Defines the behavior of the Storage category that clients will use.
@@ -273,7 +272,7 @@ public interface StorageCategoryBehavior {
      * @param onReceived Called if operation completed successfully and furnishes an operation
      */
     void getTransfer(
-            @NonNull UUID transferId,
+            @NonNull String transferId,
             @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived);
 
     /**
@@ -284,7 +283,7 @@ public interface StorageCategoryBehavior {
      * @param onError Called if an error occurs during lookup
      */
     void getTransfer(
-            @NonNull UUID transferId,
+            @NonNull String transferId,
             @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived,
             @NonNull Consumer<StorageException> onError);
 

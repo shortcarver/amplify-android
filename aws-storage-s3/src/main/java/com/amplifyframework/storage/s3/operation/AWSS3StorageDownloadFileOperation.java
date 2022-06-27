@@ -102,11 +102,13 @@ public final class AWSS3StorageDownloadFileOperation
                             transferObserver = storageService.downloadToFile(serviceKey, file);
                             transferObserver.setTransferListener(new DownloadTransferListener());
                         } catch (Exception exception) {
-                            onError.accept(new StorageException(
-                                "Issue downloading file",
-                                exception,
-                                "See included exception for more details and suggestions to fix."
-                            ));
+                            if (onError != null) {
+                                onError.accept(new StorageException(
+                                        "Issue downloading file",
+                                        exception,
+                                        "See included exception for more details and suggestions to fix."
+                                ));
+                            }
                         }
                     },
                     onError);
@@ -119,11 +121,13 @@ public final class AWSS3StorageDownloadFileOperation
             try {
                 storageService.cancelTransfer(transferObserver);
             } catch (Exception exception) {
-                onError.accept(new StorageException(
-                    "Something went wrong while attempting to cancel your AWS S3 Storage download file operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
-                ));
+                if (onError != null) {
+                    onError.accept(new StorageException(
+                            "Something went wrong while attempting to cancel your AWS S3 Storage download file operation",
+                            exception,
+                            "See attached exception for more information and suggestions"
+                    ));
+                }
             }
         }
     }
@@ -134,11 +138,13 @@ public final class AWSS3StorageDownloadFileOperation
             try {
                 storageService.pauseTransfer(transferObserver);
             } catch (Exception exception) {
-                onError.accept(new StorageException(
-                    "Something went wrong while attempting to pause your AWS S3 Storage download file operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
-                ));
+                if (onError != null) {
+                    onError.accept(new StorageException(
+                            "Something went wrong while attempting to pause your AWS S3 Storage download file operation",
+                            exception,
+                            "See attached exception for more information and suggestions"
+                    ));
+                }
             }
         }
     }
@@ -149,11 +155,13 @@ public final class AWSS3StorageDownloadFileOperation
             try {
                 storageService.resumeTransfer(transferObserver);
             } catch (Exception exception) {
-                onError.accept(new StorageException(
-                    "Something went wrong while attempting to resume your AWS S3 Storage download file operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
-                ));
+                if (onError != null) {
+                    onError.accept(new StorageException(
+                            "Something went wrong while attempting to resume your AWS S3 Storage download file operation",
+                            exception,
+                            "See attached exception for more information and suggestions"
+                    ));
+                }
             }
         }
     }
@@ -166,7 +174,9 @@ public final class AWSS3StorageDownloadFileOperation
                 HubEvent.create(StorageChannelEventName.DOWNLOAD_STATE, state.name()));
             switch (state) {
                 case COMPLETED:
-                    onSuccess.accept(StorageDownloadFileResult.fromFile(file));
+                    if (onSuccess != null) {
+                        onSuccess.accept(StorageDownloadFileResult.fromFile(file));
+                    }
                     return;
                 case FAILED:
                     // no-op;
@@ -177,18 +187,22 @@ public final class AWSS3StorageDownloadFileOperation
 
         @Override
         public void onProgressChanged(int transferId, long bytesCurrent, long bytesTotal) {
-            onProgress.accept(new StorageTransferProgress(bytesCurrent, bytesTotal));
+            if (onProgress != null) {
+                onProgress.accept(new StorageTransferProgress(bytesCurrent, bytesTotal));
+            }
         }
 
         @Override
         public void onError(int transferId, Exception exception) {
             Amplify.Hub.publish(HubChannel.STORAGE,
                 HubEvent.create(StorageChannelEventName.DOWNLOAD_ERROR, exception));
-            onError.accept(new StorageException(
-                "Something went wrong with your AWS S3 Storage download file operation",
-                exception,
-                "See attached exception for more information and suggestions"
-            ));
+            if (onError != null) {
+                onError.accept(new StorageException(
+                        "Something went wrong with your AWS S3 Storage download file operation",
+                        exception,
+                        "See attached exception for more information and suggestions"
+                ));
+            }
         }
     }
 }

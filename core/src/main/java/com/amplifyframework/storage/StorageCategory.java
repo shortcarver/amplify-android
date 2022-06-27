@@ -188,7 +188,7 @@ public final class StorageCategory extends Category<StoragePlugin<?>> implements
 
     @Override
     public void getTransfer(
-            @NonNull UUID transferId,
+            @NonNull String transferId,
             @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived
     ) {
         getSelectedPlugin().getTransfer(transferId, onReceived);
@@ -196,7 +196,7 @@ public final class StorageCategory extends Category<StoragePlugin<?>> implements
 
     @Override
     public void getTransfer(
-            @NonNull UUID transferId,
+            @NonNull String transferId,
             @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived,
             @NonNull Consumer<StorageException> onError
     ) {

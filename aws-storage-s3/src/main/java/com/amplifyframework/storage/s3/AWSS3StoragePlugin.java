@@ -503,7 +503,7 @@ public final class AWSS3StoragePlugin extends StoragePlugin<S3Client> {
     @NonNull
     @Override
     public void getTransfer(
-            @NonNull UUID transferId,
+            @NonNull String transferId,
             @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived) {
         getTransfer(transferId, onReceived, NoOpConsumer.create());
     }
@@ -511,7 +511,7 @@ public final class AWSS3StoragePlugin extends StoragePlugin<S3Client> {
     @NonNull
     @Override
     public void getTransfer(
-            @NonNull UUID transferId,
+            @NonNull String transferId,
             @NonNull Consumer<StorageTransferOperation<?, ? extends StorageTransferResult>> onReceived,
             @NonNull Consumer<StorageException> onError) {
         // TODO: Return Transfer

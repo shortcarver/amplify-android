@@ -67,7 +67,7 @@ public abstract class StorageUploadOperation<R, T extends StorageUploadResult>
      * @param onSuccess Consumer which provides a successful transfer result
      */
     public void setOnSuccess(@Nullable Consumer<T> onSuccess) {
-        this.onSuccess = onSuccess;
+        super.setOnSuccess(onSuccess);
     }
 }
 

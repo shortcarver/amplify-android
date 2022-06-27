@@ -125,11 +125,13 @@ public final class AWSS3StorageUploadInputStreamOperation
                                 objectMetadata);
                             transferObserver.setTransferListener(new UploadTransferListener());
                         } catch (IOException ioException) {
-                            onError.accept(new StorageException(
-                                "Issue uploading inputStream.",
-                                ioException,
-                                "See included exception for more details and suggestions to fix."
-                            ));
+                            if (onError != null) {
+                                onError.accept(new StorageException(
+                                        "Issue uploading inputStream.",
+                                        ioException,
+                                        "See included exception for more details and suggestions to fix."
+                                ));
+                            }
                         }
                     },
                     onError);
@@ -142,12 +144,14 @@ public final class AWSS3StorageUploadInputStreamOperation
             try {
                 storageService.cancelTransfer(transferObserver);
             } catch (Exception exception) {
-                onError.accept(new StorageException(
-                    "Something went wrong while attempting to cancel your AWS S3 Storage " +
-                        "upload input stream operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
-                ));
+                if (onError != null) {
+                    onError.accept(new StorageException(
+                            "Something went wrong while attempting to cancel your AWS S3 Storage " +
+                                    "upload input stream operation",
+                            exception,
+                            "See attached exception for more information and suggestions"
+                    ));
+                }
             }
         }
     }
@@ -158,12 +162,14 @@ public final class AWSS3StorageUploadInputStreamOperation
             try {
                 storageService.pauseTransfer(transferObserver);
             } catch (Exception exception) {
-                onError.accept(new StorageException(
-                    "Something went wrong while attempting to pause your AWS S3 Storage " +
-                        "upload input stream operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
-                ));
+                if (onError != null) {
+                    onError.accept(new StorageException(
+                            "Something went wrong while attempting to pause your AWS S3 Storage " +
+                                    "upload input stream operation",
+                            exception,
+                            "See attached exception for more information and suggestions"
+                    ));
+                }
             }
         }
     }
@@ -174,12 +180,14 @@ public final class AWSS3StorageUploadInputStreamOperation
             try {
                 storageService.resumeTransfer(transferObserver);
             } catch (Exception exception) {
-                onError.accept(new StorageException(
-                    "Something went wrong while attempting to resume your AWS S3 Storage " +
-                        "upload input stream operation",
-                    exception,
-                    "See attached exception for more information and suggestions"
-                ));
+                if (onError != null) {
+                    onError.accept(new StorageException(
+                            "Something went wrong while attempting to resume your AWS S3 Storage " +
+                                    "upload input stream operation",
+                            exception,
+                            "See attached exception for more information and suggestions"
+                    ));
+                }
             }
         }
     }
@@ -192,13 +200,17 @@ public final class AWSS3StorageUploadInputStreamOperation
                 HubEvent.create(StorageChannelEventName.UPLOAD_STATE, state.name()));
             switch (state) {
                 case COMPLETED:
-                    onSuccess.accept(StorageUploadInputStreamResult.fromKey(getRequest().getKey()));
+                    if (onSuccess != null) {
+                        onSuccess.accept(StorageUploadInputStreamResult.fromKey(getRequest().getKey()));
+                    }
                     return;
                 case FAILED:
-                    onError.accept(new StorageException(
-                        "Storage upload operation was interrupted.",
-                        "Please verify that you have a stable internet connection."
-                    ));
+                    if (onError != null) {
+                        onError.accept(new StorageException(
+                                "Storage upload operation was interrupted.",
+                                "Please verify that you have a stable internet connection."
+                        ));
+                    }
                     return;
                 default:
                     // no-op;
@@ -207,18 +219,22 @@ public final class AWSS3StorageUploadInputStreamOperation
 
         @Override
         public void onProgressChanged(int transferId, long bytesCurrent, long bytesTotal) {
-            onProgress.accept(new StorageTransferProgress(bytesCurrent, bytesTotal));
+            if (onProgress != null) {
+                onProgress.accept(new StorageTransferProgress(bytesCurrent, bytesTotal));
+            }
         }
 
         @Override
         public void onError(int transferId, Exception exception) {
             Amplify.Hub.publish(HubChannel.STORAGE,
                 HubEvent.create(StorageChannelEventName.UPLOAD_ERROR, exception));
-            onError.accept(new StorageException(
-                "Something went wrong with your AWS S3 Storage upload input stream operation",
-                exception,
-                "See attached exception for more information and suggestions"
-            ));
+            if (onError != null) {
+                onError.accept(new StorageException(
+                        "Something went wrong with your AWS S3 Storage upload input stream operation",
+                        exception,
+                        "See attached exception for more information and suggestions"
+                ));
+            }
         }
     }
 }
