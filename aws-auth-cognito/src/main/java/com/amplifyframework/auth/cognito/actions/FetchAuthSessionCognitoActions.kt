@@ -43,6 +43,7 @@ object FetchAuthSessionCognitoActions : FetchAuthSessionActions {
         Action<AuthEnvironment>("InitiateRefreshSession") { id, dispatcher ->
             logger?.verbose("$id Starting execution")
             val evt = try {
+<<<<<<< Updated upstream
                 val tokens = signedInData.cognitoUserPoolTokens
 
                 val authParameters = mutableMapOf<String, String>()
@@ -80,6 +81,22 @@ object FetchAuthSessionCognitoActions : FetchAuthSessionActions {
                     RefreshSessionEvent(RefreshSessionEvent.EventType.RefreshAuthSession(updatedSignedInData, logins))
                 } else {
                     RefreshSessionEvent(RefreshSessionEvent.EventType.Refreshed(updatedSignedInData))
+=======
+                val idToken = when (amplifyCredential) {
+                    is AmplifyCredential.UserPool -> amplifyCredential.tokens.idToken
+                    is AmplifyCredential.UserAndIdentityPool -> amplifyCredential.tokens.idToken
+                    is AmplifyCredential.IdentityPoolFederated -> amplifyCredential.federatedToken.token
+                    else -> null
+                }
+
+                val provider = when (amplifyCredential) {
+                    is AmplifyCredential.IdentityPoolFederated -> amplifyCredential.federatedToken.providerName
+                    else -> configuration.userPool?.identityProviderName
+                }
+
+                val loginsMap: Map<String, String>? = provider?.let {
+                    idToken?.let { token -> mapOf(it to token) }
+>>>>>>> Stashed changes
                 }
             } catch (e: Exception) {
                 AuthorizationEvent(AuthorizationEvent.EventType.ThrowError(e))
@@ -121,6 +138,31 @@ object FetchAuthSessionCognitoActions : FetchAuthSessionActions {
         Action<AuthEnvironment>("FetchAWSCredentials") { id, dispatcher ->
             logger?.verbose("$id Starting execution")
             val evt = try {
+<<<<<<< Updated upstream
+=======
+                val idToken = when (amplifyCredential) {
+                    is AmplifyCredential.UserPool -> amplifyCredential.tokens.idToken
+                    is AmplifyCredential.UserAndIdentityPool -> amplifyCredential.tokens.idToken
+                    is AmplifyCredential.IdentityPoolFederated -> amplifyCredential.federatedToken.token
+                    else -> null
+                }
+                val identityId = when (amplifyCredential) {
+                    is AmplifyCredential.IdentityPool -> amplifyCredential.identityId
+                    is AmplifyCredential.UserAndIdentityPool -> amplifyCredential.identityId
+                    is AmplifyCredential.IdentityPoolFederated -> amplifyCredential.identityId
+                    else -> null
+                }
+
+                val providerName: String? = when (amplifyCredential) {
+                    is AmplifyCredential.IdentityPoolFederated -> amplifyCredential.federatedToken.providerName
+                    else -> configuration.userPool?.identityProviderName
+                }
+
+                val loginsMap: Map<String, String>? = providerName?.let { provider ->
+                    idToken?.let { mapOf(provider to idToken) }
+                }
+
+>>>>>>> Stashed changes
                 val request = GetCredentialsForIdentityRequest {
                     this.identityId = identityId
                     this.logins = loginsMap.logins

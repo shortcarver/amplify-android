@@ -15,7 +15,6 @@
 
 package com.amplifyframework.statemachine.codegen.data
 
-import com.amplifyframework.auth.AuthProvider
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -33,6 +32,7 @@ sealed class AmplifyCredential {
     @SerialName("identityPool")
     data class IdentityPool(val identityId: String, val credentials: AWSCredentials) : AmplifyCredential()
 
+<<<<<<< Updated upstream
 //    @Serializable
 //    @SerialName("identityPoolFederated")
 //    data class IdentityPoolFederated(
@@ -40,6 +40,15 @@ sealed class AmplifyCredential {
 //        val identityId: String,
 //        val credentials: AWSCredentials
 //    ) : AmplifyCredential()
+=======
+    @Serializable
+    @SerialName("identityPoolFederated")
+    data class IdentityPoolFederated(
+        val federatedToken: FederatedToken,
+        val identityId: String?,
+        val credentials: AWSCredentials? = null
+    ) : AmplifyCredential()
+>>>>>>> Stashed changes
 
     @Serializable
     @SerialName("userAndIdentityPool")
@@ -48,6 +57,32 @@ sealed class AmplifyCredential {
         val identityId: String,
         val credentials: AWSCredentials
     ) : AmplifyCredential()
+<<<<<<< Updated upstream
+=======
+
+    fun update(
+        cognitoUserPoolTokens: CognitoUserPoolTokens? = null,
+        identityId: String? = null,
+        awsCredentials: AWSCredentials? = null
+    ): AmplifyCredential {
+        return when {
+            identityId != null -> when (this) {
+                is UserAndIdentityPool -> copy(identityId = identityId)
+                is UserPool -> UserAndIdentityPool(tokens, identityId, AWSCredentials.empty)
+                is IdentityPool -> copy(identityId = identityId)
+                is IdentityPoolFederated -> copy(identityId = identityId)
+                else -> IdentityPool(identityId = identityId, AWSCredentials.empty)
+            }
+            awsCredentials != null -> when (this) {
+                is UserAndIdentityPool -> copy(credentials = awsCredentials)
+                is IdentityPool -> copy(credentials = awsCredentials)
+                is IdentityPoolFederated -> copy(credentials = awsCredentials)
+                else -> Empty
+            }
+            else -> this
+        }
+    }
+>>>>>>> Stashed changes
 }
 
 // TODO: Token abstraction if needed
@@ -62,7 +97,8 @@ sealed class AmplifyCredential {
 //    data class FederatedToken(val token: String, val provider: AuthProvider) : AuthTokens()
 // }
 
-data class FederatedToken(val token: String, val provider: AuthProvider)
+@Serializable
+data class FederatedToken(val token: String, val providerName: String)
 
 @Serializable
 data class CognitoUserPoolTokens(

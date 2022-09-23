@@ -17,12 +17,22 @@ package com.amplifyframework.statemachine.codegen.actions
 
 import com.amplifyframework.statemachine.Action
 import com.amplifyframework.statemachine.codegen.data.AmplifyCredential
+<<<<<<< Updated upstream
 import com.amplifyframework.statemachine.codegen.data.SignedInData
+=======
+import com.amplifyframework.statemachine.codegen.data.FederatedToken
+>>>>>>> Stashed changes
 
 interface AuthorizationActions {
     fun resetAuthorizationAction(): Action
     fun configureAuthorizationAction(): Action
+<<<<<<< Updated upstream
     fun initializeFetchUnAuthSession(): Action
     fun initializeFetchAuthSession(signedInData: SignedInData): Action
     fun initiateRefreshSessionAction(amplifyCredential: AmplifyCredential): Action
+=======
+    fun initializeFetchAuthSession(amplifyCredential: AmplifyCredential): Action
+    fun refreshAuthSessionAction(amplifyCredential: AmplifyCredential): Action
+    fun initializeFederationToIdentityPool(federatedToken: FederatedToken, developerProvidedIdentityId: String?): Action
+>>>>>>> Stashed changes
 }

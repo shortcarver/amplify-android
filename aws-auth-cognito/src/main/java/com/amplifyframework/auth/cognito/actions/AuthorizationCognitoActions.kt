@@ -19,8 +19,14 @@ import com.amplifyframework.auth.cognito.AuthEnvironment
 import com.amplifyframework.statemachine.Action
 import com.amplifyframework.statemachine.codegen.actions.AuthorizationActions
 import com.amplifyframework.statemachine.codegen.data.AmplifyCredential
+<<<<<<< Updated upstream
 import com.amplifyframework.statemachine.codegen.data.LoginsMapProvider
 import com.amplifyframework.statemachine.codegen.data.SignedInData
+=======
+import com.amplifyframework.statemachine.codegen.data.AuthConfiguration
+import com.amplifyframework.statemachine.codegen.data.CognitoUserPoolTokens
+import com.amplifyframework.statemachine.codegen.data.FederatedToken
+>>>>>>> Stashed changes
 import com.amplifyframework.statemachine.codegen.events.AuthEvent
 import com.amplifyframework.statemachine.codegen.events.AuthorizationEvent
 import com.amplifyframework.statemachine.codegen.events.FetchAuthSessionEvent
@@ -75,6 +81,7 @@ object AuthorizationCognitoActions : AuthorizationActions {
             dispatcher.send(evt)
         }
 
+<<<<<<< Updated upstream
     override fun initiateRefreshSessionAction(amplifyCredential: AmplifyCredential) =
         Action<AuthEnvironment>("InitiateRefreshSession") { id, dispatcher ->
             logger?.verbose("$id Starting execution")
@@ -91,6 +98,46 @@ object AuthorizationCognitoActions : AuthorizationActions {
                 else -> AuthorizationEvent(
                     AuthorizationEvent.EventType.ThrowError(Exception("Credentials empty, cannot refresh."))
                 )
+=======
+    override fun initializeFederationToIdentityPool(
+        federatedToken: FederatedToken,
+        developerProvidedIdentityId: String?
+    ) = Action<AuthEnvironment>("InitializeFederationToIdentityPool") { id, dispatcher ->
+            logger?.verbose("$id Starting execution")
+            val evt = try {
+                if (developerProvidedIdentityId != null) {
+                    FetchAuthSessionEvent(
+                        FetchAuthSessionEvent.EventType.FetchAwsCredentials(
+                            AmplifyCredential.IdentityPoolFederated(federatedToken, developerProvidedIdentityId)
+                        )
+                    )
+                } else {
+                    FetchAuthSessionEvent(
+                        FetchAuthSessionEvent.EventType.FetchIdentity(
+                            AmplifyCredential.IdentityPoolFederated(federatedToken, null)
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                AuthorizationEvent(AuthorizationEvent.EventType.ThrowError(e))
+            }
+        logger?.verbose("$id Sending event ${evt.type}")
+        dispatcher.send(evt)
+    }
+
+
+    private suspend fun refreshUserPoolTokens(
+        configuration: AuthConfiguration,
+        amplifyCredential: AmplifyCredential,
+        cognitoAuthService: AWSCognitoAuthServiceBehavior
+    ): AmplifyCredential {
+        val authParameters = when (amplifyCredential) {
+            is AmplifyCredential.UserPool -> amplifyCredential.tokens.refreshToken?.let {
+                mapOf("REFRESH_TOKEN" to it)
+            }
+            is AmplifyCredential.UserAndIdentityPool -> amplifyCredential.tokens.refreshToken?.let {
+                mapOf("REFRESH_TOKEN" to it)
+>>>>>>> Stashed changes
             }
             logger?.verbose("$id Sending event ${evt.type}")
             dispatcher.send(evt)

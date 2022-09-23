@@ -26,4 +26,5 @@ interface AuthenticationActions {
         event: AuthenticationEvent.EventType.SignOutRequested,
         signedInData: SignedInData?
     ): Action
+    fun clearFederationToIdentityPool(event: AuthenticationEvent.EventType.ClearFederationToIdentityPool): Action
 }
