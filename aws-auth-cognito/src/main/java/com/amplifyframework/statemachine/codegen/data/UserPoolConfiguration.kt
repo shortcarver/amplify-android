@@ -87,17 +87,8 @@ internal data class UserPoolConfiguration internal constructor(val builder: Buil
         @Throws(AuthException::class)
         private fun validateEndpoint(endpoint: String?): String? {
             try {
-                endpoint?.let {
-                    // regex to match valid host url only with no scheme, no path, and no query
-                    val regex = Regex(
-                        "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9]" +
-                            "[A-Za-z0-9\\-]*[A-Za-z0-9])\$"
-                    )
-                    if (!regex.matches(it))
-                        throw Exception("Invalid endpoint")
-                }
                 return endpoint?.let {
-                    "https://$endpoint"
+                    "$endpoint"
                 }
             } catch (e: Exception) {
                 throw Exception(
